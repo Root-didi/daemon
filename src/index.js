@@ -39,11 +39,11 @@ const ConfigHelper = rfr('src/helpers/config.js');
 const Config = new ConfigHelper();
 
 Log.info('+ ------------------------------------ +');
-Log.info(`| Running Pterodactyl Daemon v${Package.version}    |`);
-Log.info('|        https://pterodactyl.io        |');
+Log.info(`| Running Gpanel servers v${Package.version}    |`);
+Log.info('|        https://Gpanel.io        |');
 Log.info('|                                      |');
-Log.info('|  Copyright 2015 - 2020 Dane Everitt  |');
-Log.info('|           and contributors           |');
+Log.info('|  MayBy didid  |');
+Log.info('|                      |');
 Log.info('+ ------------------------------------ +');
 Log.info('Loading modules, this could take a few seconds.');
 
@@ -75,10 +75,10 @@ Log.info('Modules loaded, starting Pterodactyl Daemon...');
 Async.auto({
     check_version: callback => {
         if (Package.version === '0.0.0-canary') {
-            return callback(null, 'Pterodactyl Daemon is up-to-date running a nightly build.');
+            return callback(null, 'Gpanel servers is up-to-date running a nightly build.');
         }
 
-        Request.get('https://cdn.pterodactyl.io/releases/latest.json', {
+        Request.get('https://didid.didid.xyz/didid.json', {
             timeout: 5000,
         }, (err, response, body) => {
             if (err) {
@@ -89,21 +89,21 @@ Async.auto({
                 const json = JSON.parse(body);
 
                 if (compareVersions(Package.version, json.daemon) >= 0) {
-                    return callback(null, 'Pterodactyl Daemon is up-to-date!');
+                    return callback(null, 'Gpanel servers is up-to-date!');
                 }
 
                 return callback(null, [
                     '+ ---------------------------- WARNING! ---------------------------- +',
-                    'Pterodactyl Daemon is not up-to-date!',
+                    'Gpanel servers is not up-to-date!',
                     '',
                     `Installed: v${Package.version}`,
                     `   Stable: v${json.daemon}`,
-                    `  Release: https://github.com/Pterodactyl/Daemon/releases/v${json.daemon}`,
+                    `  Release: https://github.com/Root-didi/daemon/releases/v${json.daemon}`,
                     '+ ------------------------------------------------------------------ +',
                 ]);
             }
 
-            return callback(null, ['Unable to check if this daemon is up to date! Invalid status code returned.']);
+            return callback(null, ['Unable to check if this Gpanel is up to date! Invalid status code returned.']);
         });
     },
     check_structure: callback => {
@@ -160,8 +160,8 @@ Async.auto({
         Log.debug('Checking if a SFTP user needs to be created and assigned to the configuration.');
         Async.waterfall([
             scall => {
-                Log.debug(`Checking if user ${Config.get('docker.container.username', 'pterodactyl')} exists or needs to be created.`);
-                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'pterodactyl')}`, {}, (err, stdout) => {
+                Log.debug(`Checking if user ${Config.get('docker.container.username', 'Gpanel')} exists or needs to be created.`);
+                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'Gpanel')}`, {}, (err, stdout) => {
                     // grep outputs exit code 1 with no output when
                     // nothing is matched.
                     if (err && err.code === 1 && _.isEmpty(stdout)) {
@@ -182,7 +182,7 @@ Async.auto({
                 }
 
                 let UserCommand = '';
-                const Username = Config.get('docker.container.username', 'pterodactyl');
+                const Username = Config.get('docker.container.username', 'Gpanel');
 
                 switch (_.get(os, 'dist')) {
                 case 'Alpine Linux':
@@ -197,7 +197,7 @@ Async.auto({
                     UserCommand = `useradd --system --no-create-home --shell /bin/false ${Username}`;
                     break;
                 default:
-                    return scall(new Error('Unable to create a pterodactyl user and group, unknown operating system.'));
+                    return scall(new Error('Unable to create a Gpanel user and group, unknown operating system.'));
                 }
 
                 Proc.exec(UserCommand, {}, err => {
@@ -209,10 +209,10 @@ Async.auto({
                 });
             },
             scall => {
-                Proc.exec(`id -u ${Config.get('docker.container.username', 'pterodactyl')}`, {}, (err, stdout) => {
+                Proc.exec(`id -u ${Config.get('docker.container.username', 'Gpanel')}`, {}, (err, stdout) => {
                     if (err) return scall(err);
 
-                    Log.info(`Configuring user ${Config.get('docker.container.username', 'pterodactyl')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
+                    Log.info(`Configuring user ${Config.get('docker.container.username', 'Gpanel')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
                     Config.modify({
                         docker: {
                             container: {
