@@ -103,14 +103,14 @@ Inquirer.prompt([
         },
         bunyan_logs: callback => {
             if (answers.logs) {
-                const MainLog = Fs.existsSync(Path.resolve('logs/wings.log'));
-                const SecondLog = Fs.existsSync(Path.resolve('logs/wings.log.0'));
+                const MainLog = Fs.existsSync(Path.resolve('logs/Gpanel.log'));
+                const SecondLog = Fs.existsSync(Path.resolve('logs/Gpanel.log.0'));
 
                 let logFile;
                 if (MainLog) {
-                    logFile = 'logs/wings.log';
+                    logFile = 'logs/Gpanel.log';
                 } else if (SecondLog) {
-                    logFile = 'logs/wings.log.0';
+                    logFile = 'logs/Gpanel.log.0';
                 } else {
                     return callback(null, '[no logs found]');
                 }
