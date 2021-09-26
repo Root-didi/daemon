@@ -3,7 +3,7 @@ services:
   daemon:
     build: .
     restart: always
-    hostname: daemon
+    hostname: test
     ports:
       - "8080:8080"
       - "2022:2022"
