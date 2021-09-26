@@ -71,7 +71,7 @@ if (userDefinedCAStores.length > 0) {
     });
 }
 
-Log.info('Modules loaded, starting Pterodactyl Daemon...');
+Log.info('Modules loaded, starting Gpanel Daemon...');
 Async.auto({
     check_version: callback => {
         if (Package.version === '0.0.0-canary') {
@@ -160,8 +160,8 @@ Async.auto({
         Log.debug('Checking if a SFTP user needs to be created and assigned to the configuration.');
         Async.waterfall([
             scall => {
-                Log.debug(`Checking if user ${Config.get('docker.container.username', 'Gpanel')} exists or needs to be created.`);
-                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'Gpanel')}`, {}, (err, stdout) => {
+                Log.debug(`Checking if user ${Config.get('docker.container.username', 'Pterodactyl')} exists or needs to be created.`);
+                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'Pterodactyl')}`, {}, (err, stdout) => {
                     // grep outputs exit code 1 with no output when
                     // nothing is matched.
                     if (err && err.code === 1 && _.isEmpty(stdout)) {
@@ -182,7 +182,7 @@ Async.auto({
                 }
 
                 let UserCommand = '';
-                const Username = Config.get('docker.container.username', 'Gpanel');
+                const Username = Config.get('docker.container.username', 'Pterodactyl');
 
                 switch (_.get(os, 'dist')) {
                 case 'Alpine Linux':
@@ -209,10 +209,10 @@ Async.auto({
                 });
             },
             scall => {
-                Proc.exec(`id -u ${Config.get('docker.container.username', 'Gpanel')}`, {}, (err, stdout) => {
+                Proc.exec(`id -u ${Config.get('docker.container.username', 'Pterodactyl')}`, {}, (err, stdout) => {
                     if (err) return scall(err);
 
-                    Log.info(`Configuring user ${Config.get('docker.container.username', 'Gpanel')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
+                    Log.info(`Configuring user ${Config.get('docker.container.username', 'Pterodactyl')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
                     Config.modify({
                         docker: {
                             container: {
