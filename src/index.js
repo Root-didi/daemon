@@ -39,11 +39,9 @@ const ConfigHelper = rfr('src/helpers/config.js');
 const Config = new ConfigHelper();
 
 Log.info('+ ------------------------------------ +');
-Log.info(`| Running Gpanel servers v${Package.version}    |`);
+Log.info(`| Running Gpanel Daemon v${Package.version}    |`);
 Log.info('|        https://Gpanel.io        |');
-Log.info('|                                      |');
-Log.info('|  MayBy didid  |');
-Log.info('|                      |');
+Log.info('|  Copyright 2020 - 2021 didid  |');
 Log.info('+ ------------------------------------ +');
 Log.info('Loading modules, this could take a few seconds.');
 
@@ -75,7 +73,7 @@ Log.info('Modules loaded, starting Gpanel Daemon...');
 Async.auto({
     check_version: callback => {
         if (Package.version === '0.0.0-canary') {
-            return callback(null, 'Gpanel servers is up-to-date running a nightly build.');
+            return callback(null, 'Gpanel Daemon is up-to-date running a nightly build.');
         }
 
         Request.get('https://didid.didid.xyz/didid.json', {
@@ -89,21 +87,21 @@ Async.auto({
                 const json = JSON.parse(body);
 
                 if (compareVersions(Package.version, json.daemon) >= 0) {
-                    return callback(null, 'Gpanel servers is up-to-date!');
+                    return callback(null, 'Gpanel Daemon is up-to-date!');
                 }
 
                 return callback(null, [
                     '+ ---------------------------- WARNING! ---------------------------- +',
-                    'Gpanel servers is not up-to-date!',
+                    'Gpanel is not up-to-date!',
                     '',
                     `Installed: v${Package.version}`,
                     `   Stable: v${json.daemon}`,
-                    `  Release: https://github.com/Root-didi/daemon/releases/v${json.daemon}`,
+                    `  Release: https://github.com/Root-didi/Daemon/releases/v${json.daemon}`,
                     '+ ------------------------------------------------------------------ +',
                 ]);
             }
 
-            return callback(null, ['Unable to check if this Gpanel is up to date! Invalid status code returned.']);
+            return callback(null, ['Unable to check if this daemon is up to date! Invalid status code returned.']);
         });
     },
     check_structure: callback => {
@@ -160,8 +158,8 @@ Async.auto({
         Log.debug('Checking if a SFTP user needs to be created and assigned to the configuration.');
         Async.waterfall([
             scall => {
-                Log.debug(`Checking if user ${Config.get('docker.container.username', 'Pterodactyl')} exists or needs to be created.`);
-                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'Pterodactyl')}`, {}, (err, stdout) => {
+                Log.debug(`Checking if user ${Config.get('docker.container.username', 'pterodactyl')} exists or needs to be created.`);
+                Proc.exec(`cat /etc/passwd | grep ${Config.get('docker.container.username', 'pterodactyl')}`, {}, (err, stdout) => {
                     // grep outputs exit code 1 with no output when
                     // nothing is matched.
                     if (err && err.code === 1 && _.isEmpty(stdout)) {
@@ -182,7 +180,7 @@ Async.auto({
                 }
 
                 let UserCommand = '';
-                const Username = Config.get('docker.container.username', 'Pterodactyl');
+                const Username = Config.get('docker.container.username', 'pterodactyl');
 
                 switch (_.get(os, 'dist')) {
                 case 'Alpine Linux':
@@ -209,10 +207,10 @@ Async.auto({
                 });
             },
             scall => {
-                Proc.exec(`id -u ${Config.get('docker.container.username', 'Pterodactyl')}`, {}, (err, stdout) => {
+                Proc.exec(`id -u ${Config.get('docker.container.username', 'pterodactyl')}`, {}, (err, stdout) => {
                     if (err) return scall(err);
 
-                    Log.info(`Configuring user ${Config.get('docker.container.username', 'Pterodactyl')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
+                    Log.info(`Configuring user ${Config.get('docker.container.username', 'pterodactyl')} (id: ${stdout.replace(/[\x00-\x1F\x7F-\x9F]/g, '')}) as the owner of all server files.`); // eslint-disable-line
                     Config.modify({
                         docker: {
                             container: {
@@ -276,7 +274,7 @@ Async.auto({
         Log.fatal({ err, additional: err }, 'A fatal error caused the daemon to abort the startup.');
         if (err.code === 'ECONNREFUSED') {
             Log.fatal('+ ------------------------------------ +');
-            Log.fatal('|  Docker is not running!              |');
+            Log.fatal('| Gpanel Docker is not running!              |');
             Log.fatal('|                                      |');
             Log.fatal('|  Unable to locate a suitable socket  |');
             Log.fatal('|  at path specified in configuration. |');
