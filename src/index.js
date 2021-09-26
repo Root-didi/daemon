@@ -39,9 +39,11 @@ const ConfigHelper = rfr('src/helpers/config.js');
 const Config = new ConfigHelper();
 
 Log.info('+ ------------------------------------ +');
-Log.info(`| Running Gpanel Daemon v${Package.version}    |`);
-Log.info('|        https://Gpanel.io        |');
-Log.info('|  Copyright 2020 - 2021 didid  |');
+Log.info(`| Running FusionsPanel v${Package.version}    |`);
+Log.info('|        Code By didid & Fusions      |');
+Log.info('|        https://Fusions.dev        |');
+Log.info('|        Do more code you fat fuck        |');
+Log.info('|  Copyright 2020 - 2021 didid & Fusions  |');
 Log.info('+ ------------------------------------ +');
 Log.info('Loading modules, this could take a few seconds.');
 
@@ -91,8 +93,8 @@ Async.auto({
                 }
 
                 return callback(null, [
-                    '+ ---------------------------- WARNING! ---------------------------- +',
-                    'Gpanel is not up-to-date!',
+                    '+ ---------------------------- code you fat fuck! ---------------------------- +',
+                    'FusionsPanel code by didid!',
                     '',
                     `Installed: v${Package.version}`,
                     `   Stable: v${json.daemon}`,
@@ -274,7 +276,7 @@ Async.auto({
         Log.fatal({ err, additional: err }, 'A fatal error caused the daemon to abort the startup.');
         if (err.code === 'ECONNREFUSED') {
             Log.fatal('+ ------------------------------------ +');
-            Log.fatal('| Gpanel Docker is not running!              |');
+            Log.fatal('| FusionsPanel Docker is not running!              |');
             Log.fatal('|                                      |');
             Log.fatal('|  Unable to locate a suitable socket  |');
             Log.fatal('|  at path specified in configuration. |');
