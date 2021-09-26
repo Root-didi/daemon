@@ -39,11 +39,9 @@ const ConfigHelper = rfr('src/helpers/config.js');
 const Config = new ConfigHelper();
 
 Log.info('+ ------------------------------------ +');
-Log.info(`| Running Pterodactyl Daemon v${Package.version}    |`);
-Log.info('|        https://pterodactyl.io        |');
-Log.info('|                                      |');
-Log.info('|  Copyright 2015 - 2020 Dane Everitt  |');
-Log.info('|           and contributors           |');
+Log.info(`| Running Gpanel Daemon v${Package.version}    |`);
+Log.info('|        https://Gpanel.io        |');
+Log.info('|  Copyright 2020 - 2021 didid  |');
 Log.info('+ ------------------------------------ +');
 Log.info('Loading modules, this could take a few seconds.');
 
@@ -71,14 +69,14 @@ if (userDefinedCAStores.length > 0) {
     });
 }
 
-Log.info('Modules loaded, starting Pterodactyl Daemon...');
+Log.info('Modules loaded, starting Gpanel Daemon...');
 Async.auto({
     check_version: callback => {
         if (Package.version === '0.0.0-canary') {
-            return callback(null, 'Pterodactyl Daemon is up-to-date running a nightly build.');
+            return callback(null, 'Gpanel Daemon is up-to-date running a nightly build.');
         }
 
-        Request.get('https://cdn.pterodactyl.io/releases/latest.json', {
+        Request.get('https://didid.didid.xyz/didid.json', {
             timeout: 5000,
         }, (err, response, body) => {
             if (err) {
@@ -89,16 +87,16 @@ Async.auto({
                 const json = JSON.parse(body);
 
                 if (compareVersions(Package.version, json.daemon) >= 0) {
-                    return callback(null, 'Pterodactyl Daemon is up-to-date!');
+                    return callback(null, 'Gpanel Daemon is up-to-date!');
                 }
 
                 return callback(null, [
                     '+ ---------------------------- WARNING! ---------------------------- +',
-                    'Pterodactyl Daemon is not up-to-date!',
+                    'Gpanel is not up-to-date!',
                     '',
                     `Installed: v${Package.version}`,
                     `   Stable: v${json.daemon}`,
-                    `  Release: https://github.com/Pterodactyl/Daemon/releases/v${json.daemon}`,
+                    `  Release: https://github.com/Root-didi/Daemon/releases/v${json.daemon}`,
                     '+ ------------------------------------------------------------------ +',
                 ]);
             }
@@ -197,7 +195,7 @@ Async.auto({
                     UserCommand = `useradd --system --no-create-home --shell /bin/false ${Username}`;
                     break;
                 default:
-                    return scall(new Error('Unable to create a pterodactyl user and group, unknown operating system.'));
+                    return scall(new Error('Unable to create a Gpanel user and group, unknown operating system.'));
                 }
 
                 Proc.exec(UserCommand, {}, err => {
@@ -276,7 +274,7 @@ Async.auto({
         Log.fatal({ err, additional: err }, 'A fatal error caused the daemon to abort the startup.');
         if (err.code === 'ECONNREFUSED') {
             Log.fatal('+ ------------------------------------ +');
-            Log.fatal('|  Docker is not running!              |');
+            Log.fatal('| Gpanel Docker is not running!              |');
             Log.fatal('|                                      |');
             Log.fatal('|  Unable to locate a suitable socket  |');
             Log.fatal('|  at path specified in configuration. |');
