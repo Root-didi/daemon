@@ -246,16 +246,16 @@ class Server extends EventEmitter {
 
         switch (status) {
         case Status.OFF:
-            this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Server marked as ${Ansi.style.bold}OFF`);
+            this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Server marked as ${Ansi.style.bold}OFF`);
             break;
         case Status.ON:
-            this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Server marked as ${Ansi.style.bold}ON`);
+            this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Server marked as ${Ansi.style.bold}ON`);
             break;
         case Status.STARTING:
-            this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Server marked as ${Ansi.style.bold}STARTING`);
+            this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Server marked as ${Ansi.style.bold}STARTING`);
             break;
         case Status.STOPPING:
-            this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Server marked as ${Ansi.style.bold}STOPPING`);
+            this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Server marked as ${Ansi.style.bold}STOPPING`);
             break;
         default:
             break;
@@ -275,14 +275,14 @@ class Server extends EventEmitter {
 
         this.service.onPreflight().then(next).catch(err => {
             if (err instanceof Errors.FileParseError) {
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Encountered an error while processing ${err.file} -- this could lead to issues running the server.`);
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] ${err.message}`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Encountered an error while processing ${err.file} -- this could lead to issues running the server.`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] ${err.message}`);
 
                 return next();
             }
 
             if (err instanceof Errors.NoEggConfigurationError) {
-                this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Pterodactyl Daemon] No server egg configuration could be located; aborting startup.`);
+                this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Gpanel Hosting] No server egg configuration could be located; aborting startup.`);
             }
 
             return next(err);
@@ -309,26 +309,26 @@ class Server extends EventEmitter {
                         callback();
                     },
                     callback => {
-                        this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Your server container needs to be rebuilt. This should only take a few seconds, but could take a few minutes. You do not need to do anything else while this occurs. Your server will automatically continue with startup once this process is completed.`);
+                        this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Your server container needs to be rebuilt. This should only take a few seconds, but could take a few minutes. You do not need to do anything else while this occurs. Your server will automatically continue with startup once this process is completed.`);
                         this.setStatus(Status.STOPPING);
                         this.setStatus(Status.OFF);
                         this.rebuild(callback);
                     },
                     callback => {
                         this.log.info('Completed rebuild process for server container.');
-                        this.emit('console', `${Ansi.style.green}[Pterodactyl Daemon] Completed rebuild process for server. Server is now booting.`);
+                        this.emit('console', `${Ansi.style.green}[Gpanel Hosting] Completed rebuild process for server. Server is now booting.`);
                         this.start(callback);
                     },
                 ], err => {
                     if (err) {
                         this.setStatus(Status.OFF);
-                        this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] A fatal error was encountered booting this container.`);
+                        this.emit('console', `${Ansi.style.red}[Gpanel Hosting] A fatal error was encountered booting this container.`);
                         this.buildInProgress = false;
                         this.log.error(err);
                     }
                 });
             } else {
-                this.emit('console', `${Ansi.style.cyan}[Pterodactyl Daemon] Please wait while your server is being rebuilt.`);
+                this.emit('console', `${Ansi.style.cyan}[Gpanel Hosting] Please wait while your server is being rebuilt.`);
             }
             return next(new Error('Server is currently queued for a container rebuild. Your request has been accepted and will be processed once the rebuild is complete.'));
         }
@@ -336,7 +336,7 @@ class Server extends EventEmitter {
         Async.series([
             callback => {
                 this.log.debug('Checking size of server folder before booting.');
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Checking size of server data directory...`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Checking size of server data directory...`);
                 this.fs.size((err, size) => {
                     if (err) return callback(err);
 
@@ -345,17 +345,17 @@ class Server extends EventEmitter {
                     this.currentDiskUsed = sizeInMb;
 
                     if (this.json.build.disk > 0 && sizeInMb > this.json.build.disk) {
-                        this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Not enough disk space! ${sizeInMb}M / ${this.json.build.disk}M`);
+                        this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Not enough disk space! ${sizeInMb}M / ${this.json.build.disk}M`);
                         return callback(new Error('There is not enough available disk space to start this server.'));
                     }
 
-                    this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Disk Usage: ${sizeInMb}M / ${this.json.build.disk}M`);
+                    this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Disk Usage: ${sizeInMb}M / ${this.json.build.disk}M`);
                     return callback();
                 });
             },
             callback => {
                 if (Config.get('internals.set_permissions_on_boot', true)) {
-                    this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Ensuring correct ownership of files.`);
+                    this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Ensuring correct ownership of files.`);
                     this.setPermissions(callback);
                 } else {
                     return callback();
@@ -363,11 +363,11 @@ class Server extends EventEmitter {
             },
             callback => {
                 this.log.debug('Initializing for boot sequence, running preflight checks.');
-                this.emit('console', `${Ansi.style.green}[Pterodactyl Daemon] Running server preflight.`);
+                this.emit('console', `${Ansi.style.green}[Gpanel Hosting] Running server preflight.`);
                 this.preflight(callback);
             },
             callback => {
-                this.emit('console', `${Ansi.style.green}[Pterodactyl Daemon] Starting server container.`);
+                this.emit('console', `${Ansi.style.green}[Gpanel Hosting] Starting server container.`);
                 this.docker.start(callback);
             },
         ], err => {
@@ -383,7 +383,7 @@ class Server extends EventEmitter {
                     return next(new Error('Server container was not found and needs to be rebuilt. Your request has been accepted and will be processed once the rebuild is complete.'));
                 }
 
-                this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] A fatal error was encountered while starting this server.`);
+                this.emit('console', `${Ansi.style.red}[Gpanel Hosting] A fatal error was encountered while starting this server.`);
                 this.log.error(err);
                 return next(err);
             }
@@ -404,7 +404,7 @@ class Server extends EventEmitter {
         }
 
         if (_.isUndefined(_.get(this.service, 'config.stop'))) {
-            this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] No stop configuration is defined for this egg.`);
+            this.emit('console', `${Ansi.style.red}[Gpanel Hosting] No stop configuration is defined for this egg.`);
             return next();
         }
 
@@ -479,7 +479,7 @@ class Server extends EventEmitter {
         this.setStatus(Status.STOPPING);
         this.docker.kill(err => {
             this.setStatus(Status.OFF);
-            this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Pterodactyl Daemon] Server marked as ${Ansi.style.bold}KILLED.`);
+            this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Gpanel Hosting] Server marked as ${Ansi.style.bold}KILLED.`);
             return next(err);
         });
     }
@@ -545,22 +545,22 @@ class Server extends EventEmitter {
                 return;
             }
 
-            this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Pterodactyl Daemon] ---------- Detected server process in a crashed state! ----------`);
-            this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Exit Code: ${Ansi.style.reset}${props.ExitCode}`);
-            this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Out of Memory: ${Ansi.style.reset}${props.OOMKilled}`);
-            this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Error Response: ${Ansi.style.reset}${props.Error}`);
+            this.emit('console', `${Ansi.style['bg-red']}${Ansi.style.white}[Gpanel Hosting] ---------- Detected server process in a crashed state! ----------`);
+            this.emit('console', `${Ansi.style.red}[Gpanel Hosting] Exit Code: ${Ansi.style.reset}${props.ExitCode}`);
+            this.emit('console', `${Ansi.style.red}[Gpanel Hosting] Out of Memory: ${Ansi.style.reset}${props.OOMKilled}`);
+            this.emit('console', `${Ansi.style.red}[Gpanel Hosting] Error Response: ${Ansi.style.reset}${props.Error}`);
             this.emit('crashed');
 
             if (moment.isMoment(this.lastCrash) && moment(this.lastCrash).add(60, 'seconds').isAfter(moment())) {
                 this.setCrashTime();
                 this.log.warn(props, 'Server detected as crashed but has crashed within the last 60 seconds; aborting reboot.');
-                this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Aborting automatic reboot due to crash within the last 60 seconds.`);
+                this.emit('console', `${Ansi.style.red}[Gpanel Hosting] Aborting automatic reboot due to crash within the last 60 seconds.`);
 
                 return;
             }
 
             this.log.warn(props, 'Server detected as crashed! Attempting server reboot.');
-            this.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Server process detected as entering a crashed state; rebooting.`);
+            this.emit('console', `${Ansi.style.red}[Gpanel Hosting] Server process detected as entering a crashed state; rebooting.`);
             this.setCrashTime();
 
             this.start(err => {
@@ -672,7 +672,7 @@ class Server extends EventEmitter {
 
             self.currentDiskUsed = Math.round(size / (1000 * 1000)); // eslint-disable-line
             if (self.json.build.disk > 0 && size > (self.json.build.disk * 1000 * 1000) && self.status !== Status.OFF) {
-                self.emit('console', `${Ansi.style.red}[Pterodactyl Daemon] Server is violating disk space limits. Stopping process.`);
+                self.emit('console', `${Ansi.style.red}[Gpanel Hosting] Server is violating disk space limits. Stopping process.`);
 
                 if (Config.get('actions.disk.kill', true)) {
                     self.kill(killErr => {
@@ -825,7 +825,7 @@ class Server extends EventEmitter {
 
     updateCGroups(next) {
         this.log.debug('Updating some container resource limits prior to rebuild.');
-        this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Your server has had some resource limits modified, you may need to restart to apply them.`);
+        this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Your server has had some resource limits modified, you may need to restart to apply them.`);
         this.docker.update(next);
     }
 
@@ -840,14 +840,14 @@ class Server extends EventEmitter {
             },
             rebuild: ['destroy', (results, callback) => {
                 this.log.debug('Creating a new docker container for server...');
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Rebuilding server container...`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Rebuilding server container...`);
                 this.docker.build((err, data) => {
                     callback(err, data);
                 });
             }],
             update_config: ['rebuild', (results, callback) => {
                 this.log.debug('New docker container successfully created for server.');
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] New container built, rotating hamsters...`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] New container built, rotating hamsters...`);
                 this.log.debug('Updating configuration file for server to point to new docker container.');
                 this.modifyConfig({
                     rebuild: false,
@@ -864,7 +864,7 @@ class Server extends EventEmitter {
                 this.service.init().then(callback).catch(callback);
             }],
             init_container: ['init_service', (results, callback) => {
-                this.emit('console', `${Ansi.style.yellow}[Pterodactyl Daemon] Container is being initialized...`);
+                this.emit('console', `${Ansi.style.yellow}[Gpanel Hosting] Container is being initialized...`);
                 this.initContainer(callback);
             }],
         }, err => {
