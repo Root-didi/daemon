@@ -246,16 +246,16 @@ class Server extends EventEmitter {
 
         switch (status) {
         case Status.OFF:
-            this.emit('console', `${Ansi.style.cyan}[` Hosting] Server marked as ${Ansi.style.bold}OFF`);
+            this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Server marked as ${Ansi.style.bold}OFF`);
             break;
         case Status.ON:
-            this.emit('console', `${Ansi.style.cyan}[Fusions Panel] Server marked as ${Ansi.style.bold}ON`);
+            this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Server marked as ${Ansi.style.bold}ON`);
             break;
         case Status.STARTING:
-            this.emit('console', `${Ansi.style.cyan}[Fusions Panel] Server marked as ${Ansi.style.bold}STARTING`);
+            this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Server marked as ${Ansi.style.bold}STARTING`);
             break;
         case Status.STOPPING:
-            this.emit('console', `${Ansi.style.cyan}[Fusions Panel] Server marked as ${Ansi.style.bold}STOPPING`);
+            this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Server marked as ${Ansi.style.bold}STOPPING`);
             break;
         default:
             break;
@@ -309,26 +309,26 @@ class Server extends EventEmitter {
                         callback();
                     },
                     callback => {
-                        this.emit('console', `${Ansi.style.cyan}[Fusions Panel] Your server container needs to be rebuilt. This should only take a few seconds, but could take a few minutes. You do not need to do anything else while this occurs. Your server will automatically continue with startup once this process is completed.`);
+                        this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Your server container needs to be rebuilt. This should only take a few seconds, but could take a few minutes. You do not need to do anything else while this occurs. Your server will automatically continue with startup once this process is completed.`);
                         this.setStatus(Status.STOPPING);
                         this.setStatus(Status.OFF);
                         this.rebuild(callback);
                     },
                     callback => {
                         this.log.info('Completed rebuild process for server container.');
-                        this.emit('console', `${Ansi.style.green}[Fusions Panel] Completed rebuild process for server. Server is now booting.`);
+                        this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Completed rebuild process for server. Server is now booting.`);
                         this.start(callback);
                     },
                 ], err => {
                     if (err) {
                         this.setStatus(Status.OFF);
-                        this.emit('console', `${Ansi.style.red}[Fusions Panel] A fatal error was encountered booting this container.`);
+                        this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] A fatal error was encountered booting this container.`);
                         this.buildInProgress = false;
                         this.log.error(err);
                     }
                 });
             } else {
-                this.emit('console', `${Ansi.style.cyan}[Fusions Panel] Please wait while your server is being rebuilt.`);
+                this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] Please wait while your server is being rebuilt.`);
             }
             return next(new Error('Server is currently queued for a container rebuild. Your request has been accepted and will be processed once the rebuild is complete.'));
         }
@@ -383,7 +383,7 @@ class Server extends EventEmitter {
                     return next(new Error('Server container was not found and needs to be rebuilt. Your request has been accepted and will be processed once the rebuild is complete.'));
                 }
 
-                this.emit('console', `${Ansi.style.red}[Fusions Panel] A fatal error was encountered while starting this server.`);
+                this.emit('console', `${Ansi.style.Yellow}[Fusions Panel] A fatal error was encountered while starting this server.`);
                 this.log.error(err);
                 return next(err);
             }
